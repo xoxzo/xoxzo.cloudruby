@@ -8,11 +8,11 @@ module Xoxzo
 
     class XoxzoRespose
       def initalize
-        @status = nil
+        @errors = nil
         @message = Hash.new
         @messages = []
       end
-      attr_accessor :status,:message,:messages
+      attr_accessor :errors,:message,:messages
     end
 
     class XoxzoClient
@@ -30,11 +30,26 @@ module Xoxzo
                             :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
         if res.code == 201
           xr = XoxzoRespose.new
-          xr.status = nil
+          xr.errors = nil
           xr.messages = JSON.parse(res.body)
         else
           xr = XoxzoRespose.new
-          xr.status = res.code
+          xr.errors = res.code
+          xr.message = JSON.parse(res.body)
+        end
+        return xr
+      end
+
+      def get_sms_delivery_status(msgid)
+        url = @xoxzo_api_sms_url + msgid
+        res = HTTParty.get(url, :basic_auth => @auth)
+        if res.code == 200
+          xr = XoxzoRespose.new
+          xr.errors = nil
+          xr.message = JSON.parse(res.body)
+        else
+          xr = XoxzoRespose.new
+          xr.errors = res.code
           xr.message = JSON.parse(res.body)
         end
         return xr
