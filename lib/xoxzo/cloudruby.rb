@@ -7,10 +7,10 @@ module Xoxzo
   module Cloudruby
 
     class XoxzoRespose
-      def initalize
-        @errors = nil
-        @message = Hash.new
-        @messages = []
+      def initialize(errors: nil, message: Hash.new, messages: [])
+        @errors = errors
+        @message = message
+        @messages = messages
       end
       attr_accessor :errors,:message,:messages
     end
@@ -29,13 +29,9 @@ module Xoxzo
                             :body => body.to_json,
                             :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
         if res.code == 201
-          xr = XoxzoRespose.new
-          xr.errors = nil
-          xr.messages = JSON.parse(res.body)
+          xr = XoxzoRespose.new(messages: JSON.parse(res.body))
         else
-          xr = XoxzoRespose.new
-          xr.errors = res.code
-          xr.message = JSON.parse(res.body)
+          xr = XoxzoRespose.new(errors: res.code,message: JSON.parse(res.body))
         end
         return xr
       end
@@ -44,13 +40,24 @@ module Xoxzo
         url = @xoxzo_api_sms_url + msgid
         res = HTTParty.get(url, :basic_auth => @auth)
         if res.code == 200
-          xr = XoxzoRespose.new
-          xr.errors = nil
-          xr.message = JSON.parse(res.body)
+          xr = XoxzoRespose.new(message: JSON.parse(res.body))
         else
-          xr = XoxzoRespose.new
-          xr.errors = res.code
-          xr.message = JSON.parse(res.body)
+          xr = XoxzoRespose.new(errors: res.code,message: JSON.parse(res.body))
+        end
+        return xr
+      end
+
+      def get_sent_sms_list(sent_date: nil)
+        if sent_date == nil
+          url = @xoxzo_api_sms_url
+        else
+          url = @xoxzo_api_sms_url + "?sent_date" + sent_date
+        end
+        res = HTTParty.get(url, :basic_auth => @auth)
+        if res.code == 200
+          xr = XoxzoRespose.new(messages: JSON.parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code, message: JSON.parse(res.body))
         end
         return xr
       end
