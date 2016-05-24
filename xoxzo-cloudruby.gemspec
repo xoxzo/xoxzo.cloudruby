@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Xoxzo::Cloudruby::VERSION
   spec.authors       = ["Akira Nonaka"]
   spec.email         = ["akira@xoxzo.com"]
-
+  spec.licenses      = ['MIT']
   spec.summary       = %q{Xoxzo telephony API library}
   spec.description   = %q{Xoxzo telephony API library in Ruby. Pleae look http://docs.xoxzo.com/en/ for API details.}
   spec.homepage      = "https://github.com/xoxzo/xoxzo-cloudruby"
