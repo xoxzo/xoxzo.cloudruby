@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-Sample code 1
+Sample Code 1
 
     require 'pp'
     require 'xoxzo/cloudruby'
