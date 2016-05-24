@@ -22,7 +22,39 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Sample code 1
+
+    require 'pp'
+    require 'xoxzo/cloudruby'
+    include Xoxzo::Cloudruby
+    
+    sid = ENV['XOXZO_API_SID']
+    token = ENV['XOXZO_API_AUTH_TOKEN']
+    xc = XoxzoClient.new(sid,token)
+    res = xc.send_sms(message: "Hello! This is Xoxzo!", recipient: "+818012345678", sender: "8108012345678")
+    if res.errors != nil
+      pp res
+      exit -1
+    end
+
+Sample Code 2
+
+    sid = ENV['XOXZO_API_SID']
+    token = ENV['XOXZO_API_AUTH_TOKEN']
+    xc = XoxzoClient.new(sid,token)
+    res = xc.call_simple_playback(caller:"810812345678",recipient: "+818012345678",recording_url: "http://example.com/example.mp3")
+    if res.errors != nil
+      pp res
+      exit -1
+    end
+    
+    callid = res.messages[0]['callid']
+    pp xc.get_simple_playback_status(callid: callid)
+        
+    msgid = res.messages[0]['msgid']
+    res = xc.get_sms_delivery_status(msgid: msgid)
+    pp res
+    
 
 ## Development
 
