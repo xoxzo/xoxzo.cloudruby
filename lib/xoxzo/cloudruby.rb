@@ -36,7 +36,7 @@ module Xoxzo
         return xr
       end
 
-      def get_sms_delivery_status(msgid)
+      def get_sms_delivery_status(msgid:)
         url = @xoxzo_api_sms_url + msgid
         res = HTTParty.get(url, :basic_auth => @auth)
         if res.code == 200
