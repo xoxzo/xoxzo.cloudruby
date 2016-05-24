@@ -25,7 +25,7 @@ describe Xoxzo::Cloudruby do
     sleep(2)
 
     msgid = res.messages[0]['msgid']
-    res = @xc.get_sms_delivery_status(msgid=msgid) # this is temprary msgid 2016/05/19
+    res = @xc.get_sms_delivery_status(msgid: msgid) # this is temprary msgid 2016/05/19
     expect(res.errors).to be nil
     expect(res.message.key?('msgid')).to be true
     expect(res.message.key?('cost')).to be true
@@ -40,7 +40,7 @@ describe Xoxzo::Cloudruby do
   end
 
   it 'test get sms status fail, bad msgid' do
-    res = @xc.get_sms_delivery_status(msgid="0123456789")
+    res = @xc.get_sms_delivery_status(msgid: "0123456789")
     expect(res.errors).to eq 404
     expect(res.message).to eq [] # this is a bug currently
     # expect(res.message).to be nil
