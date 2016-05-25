@@ -5,7 +5,7 @@ require 'pp'
 sid = ENV['XOXZO_API_SID']
 token = ENV['XOXZO_API_AUTH_TOKEN']
 xc = XoxzoClient.new(sid,token)
-res = xc.send_sms(message: "Hello! This is Xoxzo!", recipient: "+818054695209", sender: "8108012345678")
+res = xc.send_sms(message: "Hello! This is Xoxzo!", recipient: "+818012345678", sender: "8108012345678")
 if res.errors != nil
   pp res
   return
