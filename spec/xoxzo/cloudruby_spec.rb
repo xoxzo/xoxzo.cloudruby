@@ -104,5 +104,14 @@ describe Xoxzo::Cloudruby do
     expect(res.message[0].key?('monthly_cost')).to be true
     expect(res.messages).to eq []
   end
+
+  it 'test get din list, subscribe, unsubscribe success' do
+    res = @xc.get_din_list()
+    din_uid = res.message[0]['din_uid']
+    res = @xc.subscribe_din(din_uid: din_uid)
+    expect(res.errors).to be nil
+    res = @xc.unsubscribe_din(din_uid: din_uid)
+    expect(res.errors).to be nil
+  end
 end
 
