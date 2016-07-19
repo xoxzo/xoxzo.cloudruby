@@ -42,8 +42,7 @@ describe Xoxzo::Cloudruby do
   it 'test get sms status fail, bad msgid' do
     res = @xc.get_sms_delivery_status(msgid: "0123456789")
     expect(res.errors).to eq 404
-    expect(res.message).to eq [] # this is a bug currently
-    # expect(res.message).to be nil
+    expect(res.message).to be {}
     expect(res.messages).to eq []
   end
 
@@ -78,10 +77,17 @@ describe Xoxzo::Cloudruby do
     expect(res.messages).to eq []
   end
 
-  it 'test get simple playback status, fail' do
+  it 'test get simple playback status fail' do
     res = @xc.get_simple_playback_status(callid: "dabd8e76-390f-421c-87b5-57f31339d0c5")
     expect(res.errors).to be 404
     expect(res.message).to eq({})
+    expect(res.messages).to eq []
+  end
+
+  it 'test get din list success 01' do
+    res = @xc.get_din_list()
+    expect(res.errors).to be nil
+    expect(res.message[0].key?('monthly_cost')).to be true
     expect(res.messages).to eq []
   end
 end

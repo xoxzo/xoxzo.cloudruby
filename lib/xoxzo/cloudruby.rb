@@ -30,6 +30,7 @@ module Xoxzo
           api_host = "https://api.xoxzo.com"
           @xoxzo_api_sms_url = api_host + "/sms/messages/"
           @xoxzo_api_voice_simple_url = api_host + "/voice/simple/playback/"
+          @xoxzo_api_dins_url = api_host + "/voice/dins/"
       end
 
       # send sms method
@@ -105,6 +106,21 @@ module Xoxzo
       # retrun :: XoxzoRespose
       def get_simple_playback_status(callid:)
         url = @xoxzo_api_voice_simple_url + callid
+        res = HTTParty.get(url, :basic_auth => @auth)
+        if res.code == 200
+          xr = XoxzoRespose.new(message: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
+      def get_din_list(search_string: nil)
+        if search_string == nil
+          url = @xoxzo_api_dins_url
+        else
+          url = @xoxzo_api_dins_url + '?' + search_string
+        end
         res = HTTParty.get(url, :basic_auth => @auth)
         if res.code == 200
           xr = XoxzoRespose.new(message: json_safe_parse(res.body))
