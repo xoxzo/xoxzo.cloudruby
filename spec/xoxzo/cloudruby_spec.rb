@@ -90,5 +90,19 @@ describe Xoxzo::Cloudruby do
     expect(res.message[0].key?('monthly_cost')).to be true
     expect(res.messages).to eq []
   end
+
+  it 'test get din list success 02' do
+    res = @xc.get_din_list(search_string: 'country=JP')
+    expect(res.errors).to be nil
+    expect(res.message[0].key?('monthly_cost')).to be true
+    expect(res.messages).to eq []
+  end
+
+  it 'test get din list success 03' do
+    res = @xc.get_din_list(search_string: 'prefix=813')
+    expect(res.errors).to be nil
+    expect(res.message[0].key?('monthly_cost')).to be true
+    expect(res.messages).to eq []
+  end
 end
 
