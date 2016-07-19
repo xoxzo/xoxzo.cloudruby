@@ -133,9 +133,25 @@ describe Xoxzo::Cloudruby do
     }
     expect(din_uid_match).to be true
 
-    res = @xc.unsubscribe_din(din_uid: din_uid)
+    dummy_action_url = 'http://example.com/dummy_action'
+    res = @xc.set_action_url(din_uid: din_uid, action_url: dummy_action_url)
     expect(res.errors).to be nil
 
+    res = @xc.get_subscription_list()
+    expect(res.errors).to be nil
+
+    # action url must be set correctly
+    action_url_match = false
+    res.messages.each {|m|
+      if (m['action']['url'] == dummy_action_url) && (m['din_uid'] == din_uid)
+        action_url_match = true
+        break
+      end
+    }
+    expect(action_url_match).to be true
+
+    res = @xc.unsubscribe_din(din_uid: din_uid)
+    expect(res.errors).to be nil
 
     # after unsubscribe din, num of subscription should be same as before
     res = @xc.get_subscription_list()

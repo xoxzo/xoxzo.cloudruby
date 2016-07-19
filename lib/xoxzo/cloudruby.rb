@@ -166,6 +166,20 @@ module Xoxzo
         return xr
       end
 
+      def set_action_url(din_uid:, action_url:)
+        url = @xoxzo_api_dins_url + 'subscriptions/' + din_uid + '/'
+        body = {'action_url': action_url}
+        res = HTTParty.post(url, :basic_auth => @auth,
+                            :body => body.to_json,
+                            :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+        if res.code == 200
+          xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
       private
       def json_safe_parse(s)
         return JSON.parse(s)
