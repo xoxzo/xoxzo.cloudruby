@@ -155,6 +155,17 @@ module Xoxzo
         return xr
       end
 
+      def get_subscription_list()
+        url = @xoxzo_api_dins_url + 'subscriptions/'
+        res = HTTParty.get(url, :basic_auth => @auth)
+        if res.code == 200
+          xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
       private
       def json_safe_parse(s)
         return JSON.parse(s)

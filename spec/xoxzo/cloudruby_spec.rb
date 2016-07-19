@@ -106,12 +106,53 @@ describe Xoxzo::Cloudruby do
   end
 
   it 'test get din list, subscribe, unsubscribe success' do
+
+    res = @xc.get_subscription_list()
+    expect(res.errors).to be nil
+    num_of_subscriptions = res.messages.length
+
     res = @xc.get_din_list()
+
     din_uid = res.message[0]['din_uid']
     res = @xc.subscribe_din(din_uid: din_uid)
     expect(res.errors).to be nil
+
+    # after subscribe din, num of subscription should be incremented by 1
+    res = @xc.get_subscription_list()
+    expect(res.errors).to be nil
+    num_of_subscriptions_2 = res.messages.length
+    expect(num_of_subscriptions_2).to eq (num_of_subscriptions + 1)
+
+    # subscribed din_uid must be in the subscription list
+    din_uid_match = false
+    res.messages.each {|m|
+      if m['din_uid'] == din_uid
+        din_uid_match = true
+        break
+      end
+    }
+    expect(din_uid_match).to be true
+
     res = @xc.unsubscribe_din(din_uid: din_uid)
     expect(res.errors).to be nil
+
+
+    # after unsubscribe din, num of subscription should be same as before
+    res = @xc.get_subscription_list()
+    expect(res.errors).to be nil
+    num_of_subscriptions_2 = res.messages.length
+    expect(num_of_subscriptions_2).to eq (num_of_subscriptions)
+
+    # subscribed din_uid must NOT be in the subscription list
+    din_uid_match = false
+    res.messages.each {|m|
+      if m['din_uid'] == din_uid
+        din_uid_match = true
+        break
+      end
+    }
+    expect(din_uid_match).to be false
+
   end
 end
 
