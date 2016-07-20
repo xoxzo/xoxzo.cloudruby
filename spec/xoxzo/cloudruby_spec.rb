@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'pp'
+require 'date'
 
 include Xoxzo::Cloudruby
 
@@ -25,7 +26,7 @@ describe Xoxzo::Cloudruby do
     sleep(2)
 
     msgid = res.messages[0]['msgid']
-    res = @xc.get_sms_delivery_status(msgid: msgid) # this is temprary msgid 2016/05/19
+    res = @xc.get_sms_delivery_status(msgid: msgid)
     expect(res.errors).to be nil
     expect(res.message.key?('msgid')).to be true
     expect(res.message.key?('cost')).to be true
@@ -54,13 +55,13 @@ describe Xoxzo::Cloudruby do
     # pp res.messages
   end
 
-  it 'test get sent sms list with specifice date' do
-    res = @xc.get_sent_sms_list(sent_date: "=2016-05-18")
+  it 'test get sent sms list with specific date' do
+    a_month_ago = (Date.today - 30).to_s
+    res = @xc.get_sent_sms_list(sent_date: ">=" + a_month_ago)
     expect(res.errors).to be nil
     expect(res.message).to eq({})
     if  res.messages != []
       expect(res.messages[0].key?('cost')).to be true
-      #pp res.messages
     end
   end
 
