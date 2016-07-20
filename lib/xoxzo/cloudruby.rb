@@ -30,6 +30,7 @@ module Xoxzo
           api_host = "https://api.xoxzo.com"
           @xoxzo_api_sms_url = api_host + "/sms/messages/"
           @xoxzo_api_voice_simple_url = api_host + "/voice/simple/playback/"
+          @xoxzo_api_dins_url = api_host + "/voice/dins/"
       end
 
       # send sms method
@@ -108,6 +109,71 @@ module Xoxzo
         res = HTTParty.get(url, :basic_auth => @auth)
         if res.code == 200
           xr = XoxzoRespose.new(message: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
+      def get_din_list(search_string: nil)
+        if search_string == nil
+          url = @xoxzo_api_dins_url
+        else
+          url = @xoxzo_api_dins_url + '?' + search_string
+        end
+        res = HTTParty.get(url, :basic_auth => @auth)
+        if res.code == 200
+          xr = XoxzoRespose.new(message: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
+      def subscribe_din(din_uid:)
+        url = @xoxzo_api_dins_url + 'subscriptions/'
+        body = {"din_uid" => din_uid }
+        res = HTTParty.post(url, :basic_auth => @auth,
+                            :body => body.to_json,
+                            :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+        if res.code == 201
+          xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
+      def unsubscribe_din(din_uid:)
+        url = @xoxzo_api_dins_url + 'subscriptions/' + din_uid + '/'
+        res = HTTParty.delete(url, :basic_auth => @auth)
+        if res.code == 200
+          xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
+      def get_subscription_list()
+        url = @xoxzo_api_dins_url + 'subscriptions/'
+        res = HTTParty.get(url, :basic_auth => @auth)
+        if res.code == 200
+          xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
+      def set_action_url(din_uid:, action_url:)
+        url = @xoxzo_api_dins_url + 'subscriptions/' + din_uid + '/'
+        body = {'action_url': action_url}
+        res = HTTParty.post(url, :basic_auth => @auth,
+                            :body => body.to_json,
+                            :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+        if res.code == 200
+          xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
         else
           xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
         end
