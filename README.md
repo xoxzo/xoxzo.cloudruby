@@ -1,8 +1,6 @@
 # Xoxzo::Cloudruby
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/xoxzo/cloudruby`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+xoxzo-cloudruby is the API wrapper for Xoxzo telephoney cloud API for Ruby.
 
 ## Installation
 
@@ -22,9 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-Sample Code 1
+## Sample Code 1
 
-Send SMS
+### Send SMS
 
     require 'pp'
     require 'xoxzo/cloudruby'
@@ -38,10 +36,28 @@ Send SMS
       pp res
       exit -1
     end
+    
+    msgid = res.messages[0]['msgid']
+    res = xc.get_sms_delivery_status(msgid: msgid)
+    pp res
 
-Sample Code 2
+#### Explanation
 
-Simple Playback
++ First, you need to create `XoxzoClient()` object. You must provide xoxzo sid and auth_token when initializing this object. You can get sid and auth_token after you sign up the xoxzo account and access the xoxzo dashboard.
+
++ Then you can call `send_sms()` method. You need to provide three parameters.
+
+  - message: sms text you want to send.
+  - recipient: phone number of the sms recipient. This must start with Japanese country code "+81" and follow the E.164 format.
+  - sender: this number will be displayed on the recipient device.
+
++ This method will return `XoxzoResponse` object. If `XoxzoResponse.errors == nil`, `XoxzoResponse.messages[0]['msgid']` is the meesage id that you can pass to the `get_sms_delivery_status()` call.
+
++ You can check the sms delivery status by `get_sms_delivery_status()` method. You will provide message-id of the sms you want to check.
+
+## Sample Code 2
+
+### Simple Playback
 
     sid = ENV['XOXZO_API_SID']
     token = ENV['XOXZO_API_AUTH_TOKEN']
@@ -55,13 +71,24 @@ Simple Playback
     callid = res.messages[0]['callid']
     pp xc.get_simple_playback_status(callid: callid)
         
-    msgid = res.messages[0]['msgid']
-    res = xc.get_sms_delivery_status(msgid: msgid)
-    pp res
-    
-Sample Code 3
+#### Explanation
 
-Get list of available DINs.
++ You can call `call_simple_playback()` method to playback MP3 files. You need to provide three parameters.
+
+  - caller: this number will be displayed on the recipient device.
+  - recording_url: MP3 file URL.
+  - recipient: phone number of the sms recipient. This must start with Japanese country code "+81" and follow the E.164 format.
+
++ This method will return `XoxzoResponse` object. If `XoxzoResponse.errors == nil`, `XoxzoResponse.messages[0]['callid']` is the call id that you can pass to the `get_simple_playback_status()` call.
+
++ You can check the call status by `get_simple_playback_status()` method. You will provide call-id of the phone call you want to check.
+
+
+## Sample Code 3
+
+### DIN (Dial in numbers)
+
+### Get list of available DINs.
 
     sid = ENV['XOXZO_API_SID']
     token = ENV['XOXZO_API_AUTH_TOKEN']
@@ -69,22 +96,43 @@ Get list of available DINs.
     res = xc.get_din_list()
     din_uid = res.message[0]['din_uid'] # get the din unique ID for the frist one for expample
 
-Subscribe a DIN. 
+#### Explanation
+
+1. In order to subscribe DIN, you must find available unsubscribed DINs using get_din_list() method.
+
+### Subscribe a DIN. 
   
     res = xc.subscribe_din(din_uid: din_uid)
 
-Set the action url.
+#### Explanation
+
+1. Then you subscribe a DIN via subscribe_din() method specifying din unique id.
+
+### Set the action url.
     
     dummy_action_url = 'http://example.com/dummy_action'
     res = xc.set_action_url(din_uid: din_uid, action_url: dummy_action_url)
 
-Get the list of subscriptions.
+#### Explanation
+
+1. Once you subscribed the DIN, you can set action url to the DIN. This URL will be called in the event of the DIN gets called.
+The URL will called by http GET method with the parameters, caller and recipient.
+
+### Get the list of subscriptions.
 
     res = xc.get_subscription_list()
+
+#### Explanation
+
+1. In order to get the list of current subscription, you can call the method above.
     
-Unsubscribe the DIN.
+### Unsubscribe the DIN.
 
     res = xc.unsubscribe_din(din_uid: din_uid)
+
+#### Explanation
+
+1. When you no longer use DIN, you can unsubscribe the DIN by specifying the din unique id.
 
 ## Development
 
