@@ -41,8 +41,9 @@ module Xoxzo
       def send_sms(message:, recipient:, sender:)
         body = {"message" => message , "recipient" => recipient , "sender" => sender}
         res = HTTParty.post(@xoxzo_api_sms_url, :basic_auth => @auth,
-                            :body => body.to_json,
-                            :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+                            :body => body,
+                            #:debug_output => $stdout,
+                            :headers => { 'Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json'})
         if res.code == 201
           xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
         else
@@ -91,8 +92,8 @@ module Xoxzo
       def call_simple_playback(caller:, recipient:, recording_url:)
         body = {"caller" => caller , "recipient" => recipient , "recording_url" => recording_url}
         res = HTTParty.post(@xoxzo_api_voice_simple_url, :basic_auth => @auth,
-                            :body => body.to_json,
-                            :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+                            :body => body,
+                            :headers => { 'Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json'})
         if res.code == 201
           xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
         else
@@ -134,8 +135,8 @@ module Xoxzo
         url = @xoxzo_api_dins_url + 'subscriptions/'
         body = {"din_uid" => din_uid }
         res = HTTParty.post(url, :basic_auth => @auth,
-                            :body => body.to_json,
-                            :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+                            :body => body,
+                            :headers => { 'Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json'})
         if res.code == 201
           xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
         else
@@ -170,8 +171,8 @@ module Xoxzo
         url = @xoxzo_api_dins_url + 'subscriptions/' + din_uid + '/'
         body = {'action_url': action_url}
         res = HTTParty.post(url, :basic_auth => @auth,
-                            :body => body.to_json,
-                            :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'})
+                            :body => body,
+                            :headers => { 'Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json'})
         if res.code == 200
           xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
         else
