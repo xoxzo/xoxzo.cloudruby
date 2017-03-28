@@ -86,7 +86,7 @@ module Xoxzo
 
       # call simple playback method
       # caller :: caller phone number displayed on the recipient hand set
-      # recipient :: sms recipient phone numner eg. "+818012345678", remove first 0 in front of area number
+      # recipient :: sms recipient phone number eg. "+818012345678", remove first 0 in front of area number
       # recording_url :: URL of the mp3 file to playback. eg. "http://example.com/example.mp3"
       # return :: XoxzoRespose
       def call_simple_playback(caller:, recipient:, recording_url:)
@@ -102,7 +102,26 @@ module Xoxzo
         return xr
       end
 
-      # get simple plaback status method
+      # call TTS playback method
+      # caller :: caller phone number displayed on the recipient hand set
+      # recipient :: sms recipient phone number eg. "+818012345678", remove first 0 in front of area number
+      # tts_message :: TTS text message you want to playback. eg. "Hello"
+      # tts_lang :: language code of TTS call. eg. "en"
+      # return :: XoxzoRespose
+      def call_tts_playback(caller:, recipient:, tts_message:, tts_lang:)
+        body = {"caller" => caller , "recipient" => recipient , "tts_message" => tts_message , "tts_lang" => tts_lang}
+        res = HTTParty.post(@xoxzo_api_voice_simple_url, :basic_auth => @auth,
+                            :body => body,
+                            :headers => { 'Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json'})
+        if res.code == 201
+          xr = XoxzoRespose.new(messages: json_safe_parse(res.body))
+        else
+          xr = XoxzoRespose.new(errors: res.code,message: json_safe_parse(res.body))
+        end
+        return xr
+      end
+
+      # get simple playback status method
       # callid :: call id in the return value of the call_simple_playback method
       # return :: XoxzoRespose
       def get_simple_playback_status(callid:)
