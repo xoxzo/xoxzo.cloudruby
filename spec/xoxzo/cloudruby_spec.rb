@@ -10,6 +10,8 @@ describe Xoxzo::Cloudruby do
     token = ENV['XOXZO_API_AUTH_TOKEN']
     @test_recipient = ENV['XOXZO_API_TEST_RECIPIENT']
     @test_mp3_url = ENV['XOXZO_API_TEST_MP3']
+    @test_tts_message = ENV['XOXZO_API_TEST_TTS_MESSAGE']
+    @test_tts_lang = ENV['XOXZO_API_TEST_TTS_LANG']
     @xc = XoxzoClient.new(sid,token)
     end
 
@@ -33,7 +35,7 @@ describe Xoxzo::Cloudruby do
     expect(res.messages).to eq []
   end
 
-  it 'test send sms faile, bad recipient format' do
+  it 'test send sms fail, bad recipient format' do
     res = @xc.send_sms(message: "こんにちはRuby Lib です", recipient: "+0808012345678", sender: "8108012345678")
     expect(res.errors).to eq 400
     expect(res.message.key?('recipient')).to be true
@@ -67,6 +69,19 @@ describe Xoxzo::Cloudruby do
 
   xit 'test simple voice playback success' do
     res = @xc.call_simple_playback(caller:"810812345678",recipient: @test_recipient,recording_url: @test_mp3_url)
+    expect(res.errors).to be nil
+    expect(res.message).to eq({})
+    expect(res.messages[0].key?('callid')).to be true
+
+    callid = res.messages[0]['callid']
+    res = @xc.get_simple_playback_status(callid: callid)
+    expect(res.errors).to be nil
+    expect(res.message.key?('callid')).to be true
+    expect(res.messages).to eq []
+  end
+
+  xit 'test tts playback success' do
+    res = @xc.call_tts_playback(caller:"810812345678",recipient: @test_recipient,tts_message: @test_tts_message,tts_lang: @test_tts_lang)
     expect(res.errors).to be nil
     expect(res.message).to eq({})
     expect(res.messages[0].key?('callid')).to be true
