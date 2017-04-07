@@ -10,8 +10,6 @@ describe Xoxzo::Cloudruby do
     token = ENV['XOXZO_API_AUTH_TOKEN']
     @test_recipient = ENV['XOXZO_API_TEST_RECIPIENT']
     @test_mp3_url = ENV['XOXZO_API_TEST_MP3']
-    @test_tts_message = ENV['XOXZO_API_TEST_TTS_MESSAGE']
-    @test_tts_lang = ENV['XOXZO_API_TEST_TTS_LANG']
     @xc = XoxzoClient.new(sid,token)
     end
 
@@ -81,7 +79,7 @@ describe Xoxzo::Cloudruby do
   end
 
   xit 'test tts playback success' do
-    res = @xc.call_tts_playback(caller:"810812345678",recipient: @test_recipient,tts_message: @test_tts_message,tts_lang: @test_tts_lang)
+    res = @xc.call_tts_playback(caller:"810812345678",recipient: @test_recipient,tts_message:"Hello",tts_lang:"en")
     expect(res.errors).to be nil
     expect(res.message).to eq({})
     expect(res.messages[0].key?('callid')).to be true
