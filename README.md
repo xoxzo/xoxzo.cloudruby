@@ -83,8 +83,36 @@ Or install it yourself as:
 
 + You can check the call status by `get_simple_playback_status()` method. You will provide call-id of the phone call you want to check.
 
-
 ## Sample Code 3
+
+### TTS Playback
+
+    sid = ENV['XOXZO_API_SID']
+    token = ENV['XOXZO_API_AUTH_TOKEN']
+    xc = XoxzoClient.new(sid,token)
+    res = xc.call_tts_playback(caller:"810812345678",recipient: "+818012345678",tts_message:"Hello",tts_lang:"en")
+    if res.errors != nil
+      pp res
+      exit -1
+    end
+
+    callid = res.messages[0]['callid']
+    pp xc.get_simple_playback_status(callid: callid)
+
+#### Explanation
+
++ You can call `call_tts_playback()` method to playback TTS message. You need to provide four parameters.
+
+  - caller: this number will be displayed on the recipient device.
+  - tts_message: TTS text message you want to playback.
+  - tts_lang: language code of TTS call.
+  - recipient: phone number of the sms recipient. This must start with Japanese country code "+81" and follow the E.164 format.
+
++ This method will return `XoxzoResponse` object. If `XoxzoResponse.errors == nil`, `XoxzoResponse.messages[0]['callid']` is the call id that you can pass to the `get_simple_playback_status()` call.
+
++ You can check the call status by `get_simple_playback_status()` method. You will provide call-id of the phone call you want to check.
+
+## Sample Code 4
 
 ### DIN (Dial in numbers)
 
