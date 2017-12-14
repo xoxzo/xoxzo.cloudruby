@@ -29,7 +29,8 @@ module Xoxzo
           @auth = {:username => sid, :password => token}
           api_host = "https://api.xoxzo.com"
           @xoxzo_api_sms_url = api_host + "/sms/messages/"
-          @xoxzo_api_voice_simple_url = api_host + "/voice/simple/playback/"
+          @xoxzo_api_call_url = api_host + "/calls/"
+          @xoxzo_api_voice_simple_url = api_host + "/voice/simple/playbacks/"
           @xoxzo_api_dins_url = api_host + "/voice/dins/"
       end
 
@@ -125,7 +126,7 @@ module Xoxzo
       # callid :: call id in the return value of the call_simple_playback method
       # return :: XoxzoResponse
       def get_simple_playback_status(callid:)
-        url = @xoxzo_api_voice_simple_url + callid
+        url = @xoxzo_api_call_url + callid
         res = HTTParty.get(url, :basic_auth => @auth)
         if res.code == 200
           xr = XoxzoResponse.new(message: json_safe_parse(res.body))
