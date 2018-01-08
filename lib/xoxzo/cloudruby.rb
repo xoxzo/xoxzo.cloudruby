@@ -29,7 +29,7 @@ module Xoxzo
           @auth = {:username => sid, :password => token}
           api_host = "https://api.xoxzo.com"
           @xoxzo_api_sms_url = api_host + "/sms/messages/"
-          @xoxzo_api_call_url = api_host + "/calls/"
+          @xoxzo_api_call_url = api_host + "/voice/calls/"
           @xoxzo_api_voice_simple_url = api_host + "/voice/simple/playbacks/"
           @xoxzo_api_dins_url = api_host + "/voice/dins/"
       end
